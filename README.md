@@ -1,6 +1,6 @@
 # posipercentgrade
 
-lame % = ( number / number ) * 100 converter that i originally wrote in swift but asked claude to re-write it in html with a basic gui that i slightly customized.
+lame % = ( number / number ) * 100 converter with non-sense features that i originally slash initially wrote in swift but asked claude to re-write it in html with a basic gui that i heavily customized.
 
 **initial swift code:**
 
