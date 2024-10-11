@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<!-- wow ngano man ka nag inspect element HAHAHA  -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☢️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s;
+        }
+
+        p {
+          font: 'Rubik', sans-serif;
+        }
+        
+        a {
+          font: 'Rubik', sans-serif;
+        }
+
+        .warningMute {
+         
+          color: #5E5E5E;
+          font-size: 10px
+        }
+        
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .score-button {
+            flex: 1;
+            padding: 10px;
+            background-color: white;
+            color: #333;
+            border: 1px solid #6C757D;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .score-button.active {
+            background-color: #1A662E; /* Darker green */
+            color: white;
+            border-color: #1A662E;
+        }
+
+        .score-button.inactive {
+            background-color: #F8F9FA;
+            border-color: #DEE2E6;
+            color: #6C757D;
+            cursor: not-allowed;
+        }
+
+        h1 {
+            text-align: center;
+            font-family: 'Rubik', sans-serif;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        #passingScoreInfo {
+            color: #6C757D;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        button#calculateButton {
+            width: 100%;
+            padding: 10px;
+            background-color: #28A745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button#calculateButton:hover {
+            background-color: #218838;
+        }
+
+        #result {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #failureMessage {
+            text-align: center;
+            color: red;
+            margin-top: 10px;
+        }
+
+        #memeImage, #meme2Image, #meme3Image {
+            display: none;
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        #resultBox {
+            display: none;
+        }
+
+        #muteButton {
+            display: none;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 20px auto;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #muteButton:hover {
+            background-color: #45a049;
+        }
+
+        #muteButton svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        #muteButton span {
+            vertical-align: middle;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exam Percentage Checker</h1>
+        <p>This tool calculates the percentage of your score based on curved grade percentage from the highest score on RTE 015 exams.</p>
+        <p class="warningMute"> <b>Warning:</b> An audio may play, please lower your volume.</p>
+        <div class="button-group">
+            <button class="score-button" data-score="96">P1</button>
+            <button class="score-button" data-score="96">P2</button>
+            <button class="score-button active" data-score="92">P3</button>
+            <button class="score-button inactive" data-score="0" disabled>RBE</button>
+        </div>
+
+        <label for="customHighestScore">Custom Highest Score:</label>
+        <input type="number" id="customHighestScore" value="92">
+        
+        <label for="myScore">Your Score:</label>
+        <input type="number" id="myScore" placeholder="Enter your score" required>
+        <p id="passingScoreInfo"></p>
+
+        <button id="calculateButton">Check Result</button>
+
+        <div id="resultBox">
+            <h2 id="result"></h2>
+            <div class="button-container">
+                <button id="muteButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="unmuted">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="muted" style="display:none;">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>
+                    <span class="button-text">Unmute</span>
+                </button>
+            </div>
+            <p id="failureMessage" style="display: none;"></p>
+            <img id="memeImage" src="meme.jpg" style="display: none; width: 100%; padding: 10px 0;">
+            <img id="meme2Image" src="meme2.jpg" style="display: none; width: 100%; padding: 10px 0;">
+            <img id="meme3Image" src="meme3.jpg" style="display: none; width: 100%; padding: 10px 0;">
+            <a href="https://vt.tiktok.com/ZS2TMbG6m/" id="inspireMessage" style="display: none;">Click for a surprise!</a>
+        </div>
+    </div>
+
+    <audio id="passedAudio" src="audioPassed.m4a"></audio>
+
+    <script>
+        let selectedHighestScore = 92; // Default to P3
+        const buttons = document.querySelectorAll('.score-button');
+        const customHighestScoreInput = document.getElementById('customHighestScore');
+        const passingScoreInfo = document.getElementById('passingScoreInfo');
+        const myScoreInput = document.getElementById('myScore');
+        const resultBox = document.getElementById('resultBox');
+        const calculateButton = document.getElementById('calculateButton');
+        const muteButton = document.getElementById('muteButton');
+        const audio = document.getElementById('passedAudio');
+        let isMuted = false;
+
+        // Define the custom triangle shape
+        var triangle = confetti.shapeFromPath({ path: 'M0 10 L5 0 L10 10z' });
+
+        function hideAllPhotos() {
+            document.getElementById("inspireMessage").style.display = "none";
+            document.getElementById("memeImage").style.display = "none";
+            document.getElementById("meme2Image").style.display = "none";
+            document.getElementById("meme3Image").style.display = "none";
+            document.getElementById("failureMessage").style.display = "none";
+        }
+
+        function resetCalculator() {
+            myScoreInput.value = '';
+            resultBox.style.display = 'none';
+            passingScoreInfo.style.display = 'none';
+            hideAllPhotos();
+            document.getElementById("result").innerText = '';
+            muteButton.style.display = 'none';
+            audio.pause();
+            audio.currentTime = 0;
+        }
+
+        function updatePassingScoreInfo() {
+            const highestScore = parseInt(customHighestScoreInput.value) || 92;
+            const passingScore = Math.ceil(highestScore * 0.75);
+            passingScoreInfo.textContent = `75% of ${highestScore} is ${passingScore}.`;
+        }
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (!this.classList.contains('inactive')) {
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedHighestScore = parseInt(this.dataset.score);
+                    customHighestScoreInput.value = selectedHighestScore;
+                    resetCalculator();
+                }
+            });
+        });
+
+        customHighestScoreInput.addEventListener('input', function() {
+            buttons.forEach(btn => btn.classList.remove('active'));
+            selectedHighestScore = parseInt(this.value) || 0;
+            resetCalculator();
+        });
+
+        myScoreInput.addEventListener('focus', resetCalculator);
+
+        let flickerInterval;
+
+        function changeBackgroundColor() {
+            const colors = ['#FF0000', '#FFA500', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8A2BE2'];  // ROYGBIV
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            document.body.style.backgroundColor = randomColor;
+        }
+
+
+        function startFlickering() {
+            if (!flickerInterval) {
+                flickerInterval = setInterval(changeBackgroundColor, 200); // Change every 0.2 seconds
+            }
+        }
+
+        function stopFlickering() {
+            if (flickerInterval) {
+                clearInterval(flickerInterval);
+                flickerInterval = null;
+                document.body.style.backgroundColor = '#F4F4F4'; // Reset to original color
+            }
+        }
+
+        calculateButton.addEventListener("click", function() {
+            const myScore = parseFloat(myScoreInput.value);
+            const highestScore = selectedHighestScore || parseInt(customHighestScoreInput.value) || 92;
+
+            if (isNaN(myScore) || myScore === '') {
+                alert("ayaw taka og pislit oi.");
+                resetCalculator();
+                return;
+            }
+
+            updatePassingScoreInfo();
+            passingScoreInfo.style.display = 'block';
+
+            const newPassingScore = Math.ceil(highestScore * 0.75);
+            const printPercent = (myScore / highestScore) * 100;
+
+            let resultMessage;
+            resultBox.style.display = 'block';
+
+            if (myScore >= newPassingScore && myScore <= 100) {
+                resultMessage = `Passed! You got ${printPercent.toFixed(2)}%.`;
+                hideAllPhotos();
+                if (printPercent >= 75) {
+                    confetti({
+                        shapes: [triangle],
+                        particleCount: 100,
+                        spread: 100,
+                        origin: { y: 0.6 }
+                    });
+                   
+                    startFlickering();
+                    if (!isMuted) {
+                        audio.play();
+                    }
+                    muteButton.style.display = 'inline-block';
+                } else {
+                    stopFlickering();
+                }
+            } else if (myScore < newPassingScore) {
+                resultMessage = `Oopsie, you got ${printPercent.toFixed(2)}%.`;
+                document.getElementById("inspireMessage").style.display = "block";
+                document.getElementById("failureMessage").style.display = "block";
+                document.getElementById("memeImage").style.display = "block";
+                document.getElementById("meme2Image").style.display = "block";
+                stopFlickering();
+            } else if (myScore > 100) {
+                resultMessage = ``;
+                document.getElementById("meme3Image").style.display = "block";
+                stopFlickering();
+            }
+
+            document.getElementById("result").innerText = resultMessage;
+        });
+
+       
+        muteButton.addEventListener('click', function() {
+            isMuted = !isMuted;
+            if (isMuted) {
+                audio.pause();
+                muteButton.querySelector('.unmuted').style.display = 'none';
+                muteButton.querySelector('.muted').style.display = 'inline';
+                muteButton.querySelector('.button-text').textContent = 'Unmute';
+            } else {
+                audio.play();
+                muteButton.querySelector('.unmuted').style.display = 'inline';
+                muteButton.querySelector('.muted').style.display = 'none';
+                muteButton.querySelector('.button-text').textContent = 'Mute';
+            }
+        });
+
+
+        myScoreInput.addEventListener('input', function() {
+            if (this.value === '') {
+                audio.pause();
+                audio.currentTime = 0;
+                stopFlickering();
+            }
+        });
+
+
+        window.addEventListener('beforeunload', function() {
+            audio.pause();
+            audio.currentTime = 0;
+            stopFlickering();
+        });
+
+        function resetCalculator() {
+            myScoreInput.value = '';
+            resultBox.style.display = 'none';
+            passingScoreInfo.style.display = 'none';
+            hideAllPhotos();
+            document.getElementById("result").innerText = '';
+            stopFlickering();
+            audio.pause();
+            audio.currentTime = 0;
+            muteButton.style.display = 'none';
+        }
+  </script>
+</head>
+</html>
